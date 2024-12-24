@@ -2,7 +2,6 @@ from django.db import models # type: ignore
 
 from core.models import PublishedModel
 
-
 class Category(PublishedModel):
     title = models.CharField(max_length=256, verbose_name='Название')
     slug = models.SlugField(max_length=64, unique=True, verbose_name='Слаг')
@@ -32,10 +31,14 @@ class Topping(PublishedModel):
 
 
 class Wrapper(PublishedModel):
-    title = models.CharField(max_length=256, verbose_name='Название')
+    title = models.CharField(
+        max_length=256,
+        verbose_name='Название',
+        help_text='Уникальное название обёртки, не более 256 символов'
+    )
 
     class Meta:
-        verbose_name = 'обертка'
+        verbose_name = 'объект "Обертка"'
         verbose_name_plural = 'Обертки'
 
     def __str__(self):
@@ -51,13 +54,15 @@ class IceCream(PublishedModel):
         related_name='ice_cream',
         null=True,
         blank=True,
+        verbose_name='Обертка',
     )
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
         related_name='ice_creams',
+        verbose_name='Категория',
     )
-    toppings = models.ManyToManyField(Topping)
+    toppings = models.ManyToManyField(Topping, verbose_name='Топпинг')
     is_on_main = models.BooleanField(default=False, verbose_name='На главную')
 
     class Meta:
